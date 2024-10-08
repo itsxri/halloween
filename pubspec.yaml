@@ -17,6 +17,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  just_audio: ^0.9.18
 
 flutter:
   uses-material-design: true
@@ -27,3 +28,5 @@ flutter:
     - assets/images/ghosts.png
     - assets/images/pumpkin.png
     - assets/images/spooky ghost.avif
+    - assets/images/creepy background.jpg
+    - assets/images/[Free] _Spooky_ _ Halloween Drill Type Beat [ ezmp3.cc ].mp3
