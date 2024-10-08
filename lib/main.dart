@@ -25,13 +25,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double _skullPositionX = 50;
   double _skullPositionY = 50;
-  final player = AudioPlayer();  // Audio player instance
+  final backgroundPlayer = AudioPlayer();  // For background music
+  final soundEffectPlayer = AudioPlayer(); // For sound effects (correct and scream)
 
   @override
   void initState() {
     super.initState();
     _startMovingSkull();
-    _playBackgroundMusic();  // Start playing background music
+    _playBackgroundMusic();  // Start background music
   }
 
   void _startMovingSkull() {
@@ -43,9 +44,29 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // Play the background music
   void _playBackgroundMusic() async {
-    await player.setAsset('assets/images/[Free] _Spooky_ _ Halloween Drill Type Beat [ ezmp3.cc ].mp3');  // audio
-    player.play();
+    await backgroundPlayer.setAsset('assets/images/[Free] _Spooky_ _ Halloween Drill Type Beat [ ezmp3.cc ].mp3');
+    backgroundPlayer.play();
+  }
+
+  // Stop the background music
+  void _stopBackgroundMusic() {
+    backgroundPlayer.stop();
+  }
+
+  // Play the scream sound effect for the wrong choice
+  void _playScreamSound() async {
+    _stopBackgroundMusic();  // Stop the background music
+    await soundEffectPlayer.setAsset('assets/images/Scary Scream - Sound Effects (HD) [ ezmp3.cc ].mp3');
+    soundEffectPlayer.play();
+  }
+
+  // Play success sound for the correct choice
+  void _playCorrectSound() async {
+    _stopBackgroundMusic();  // Stop the background music
+    await soundEffectPlayer.setAsset('assets/images/Correct Sound Effect [ ezmp3.cc ].mp3');
+    soundEffectPlayer.play();
   }
 
   @override
@@ -63,13 +84,15 @@ class _HomePageState extends State<HomePage> {
               fit: BoxFit.cover,
             ),
           ),
-          // Animated Creepy Skull
+          // Animated Creepy Skull (trap)
           AnimatedPositioned(
             duration: Duration(seconds: 1),
             left: _skullPositionX,
             top: _skullPositionY,
             child: GestureDetector(
               onTap: () {
+                // Play scream sound for wrong pick
+                _playScreamSound();
                 _showSpookyReaction('Creepy Skull');
               },
               child: Image.asset(
@@ -78,13 +101,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Pumpkin Image
+          // Static Pumpkin Image (correct item)
           Positioned(
             bottom: 20,
             right: 20,
             child: GestureDetector(
               onTap: () {
-                _showSpookyReaction('Pumpkin');
+                // Play correct sound for right pick
+                _playCorrectSound();
+                _showWinningMessage();
               },
               child: Image.asset(
                 'assets/images/pumpkin.png',
@@ -104,6 +129,26 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           title: Text('Spooky!'),
           content: Text('You clicked on the $item!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showWinningMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Congratulations!'),
+          content: Text('You found the correct item!'),
           actions: [
             TextButton(
               onPressed: () {
